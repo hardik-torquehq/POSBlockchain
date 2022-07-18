@@ -1,5 +1,7 @@
 from Transaction import Transaction
 from Wallet import Wallet
+from TransactionPool import TransactionPool
+from Block import Block
 
 if __name__ == '__main__':
 
@@ -10,10 +12,13 @@ if __name__ == '__main__':
 
     wallet = Wallet()
     fraudulentWallet = Wallet()
+    pool = TransactionPool()
 
     transaction = wallet.createTransaction(receiver, amount, type)
 
-    signatureValid = Wallet.signatureValid(
-        transaction.payload(), transaction.signature, wallet.publicKeyString())
+    if pool.transactionExists(transaction) == False:
+        pool.addTransaction(transaction)
 
-    print(signatureValid)
+    block = Block(pool.transactions, 'lastHash', 'forger', 1)
+
+    print(block.toJson())
