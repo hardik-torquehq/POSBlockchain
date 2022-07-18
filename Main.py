@@ -8,14 +8,12 @@ if __name__ == '__main__':
     amount = 1
     type = 'TRANSFER'
 
-    transaction = Transaction(sender, receiver, amount, type)
-
     wallet = Wallet()
-    signature = wallet.sign(transaction.toJson())
+    fraudulentWallet = Wallet()
 
-    # transaction.sign(signature)
+    transaction = wallet.createTransaction(receiver, amount, type)
 
     signatureValid = Wallet.signatureValid(
-        transaction.toJson(), signature, wallet.publicKeyString())
+        transaction.payload(), transaction.signature, wallet.publicKeyString())
 
     print(signatureValid)
