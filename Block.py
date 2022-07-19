@@ -1,4 +1,5 @@
 import time
+import copy
 
 
 class Block():
@@ -10,6 +11,12 @@ class Block():
         self.timestamp = time.time()
         self.forger = forger
         self.signature = ''
+
+    @staticmethod
+    def genesis():
+        genesisBlock = Block([], 'genesisHash', 'genesis', 0)
+        genesisBlock.timestamp = 0
+        return genesisBlock
 
     def toJson(self):
         data = {}
@@ -23,3 +30,11 @@ class Block():
             jsonTransactions.append(transaction.toJson())
         data['transactions'] = jsonTransactions
         return data
+
+    def payload(self):
+        jsonRepresentation = copy.deepcopy(self.toJson())
+        jsonRepresentation['signature'] = ''
+        return jsonRepresentation
+
+    def sign(self, signature):
+        self.signature = signature
