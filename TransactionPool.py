@@ -13,6 +13,7 @@ class TransactionPool():
             if poolTransaction.equals(transaction):
                 return True
         return False
+
     def removeFromPool(self, transactions):
         newPoolTransactions = []
         for poolTransaction in self.transactions:
@@ -23,4 +24,3 @@ class TransactionPool():
             if insert == True:
                 newPoolTransactions.append(poolTransaction)
         self.transactions = newPoolTransactions
-       
