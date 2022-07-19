@@ -5,37 +5,48 @@ from Block import Block
 from Blockchain import Blockchain
 import pprint
 from BlockchainUtils import BlockchainUtils
+from AccountModel import AccountModel
 
 if __name__ == '__main__':
 
-    sender = 'sender'
-    receiver = 'receiver'
-    amount = 1
-    type = 'TRANSFER'
-
-    wallet = Wallet()
-    fraudulentWallet = Wallet()
+    blockchain = Blockchain()
     pool = TransactionPool()
 
-    transaction = wallet.createTransaction(receiver, amount, type)
+    alice = Wallet()
+    bob = Wallet()
+    exchange = Wallet()
+    forger = Wallet()
 
-    if pool.transactionExists(transaction) == False:
-        pool.addTransaction(transaction)
+    exchangeTransaction = exchange.createTransaction(
+        alice.publicKeyString(), 10, 'EXCHANGE')
 
-    blockchain = Blockchain()
+    if not pool.transactionExists(exchangeTransaction):
+        pool.addTransaction(exchangeTransaction)
 
+    coveredTransactions = blockchain.getCoveredTransactionSet(
+        pool.transactions)
     lastHash = BlockchainUtils.hash(
         blockchain.blocks[-1].payload()).hexdigest()
     blockCount = blockchain.blocks[-1].blockCount + 1
-    block = wallet.createBlock(pool.transactions, lastHash, blockCount)
+   
+    blockOne = forger.createBlock(coveredTransactions, lastHash, blockCount) 
+    blockchain.addBlock(blockOne)
+    pool.removeFromPool(blockOne.transactions)
+    
+    ''' Alice wants to send 5 Token to Bob '''
+    transaction = alice.createTransaction(bob.publicKeyString(), 5, 'TRANSFER')
 
-    if not blockchain.lastBlockHashValid(block):
-        print('lastBlockHash is not valid')
+    if not pool.transactionExists(transaction):
+        pool.addTransaction(transaction)
 
-    if not blockchain.blockCountValid(block):
-        print('BlockCount is not valid')
-
-    if blockchain.lastBlockHashValid(block) and blockchain.blockCountValid(block):
-        blockchain.addBlock(block)
+    coveredTransactions = blockchain.getCoveredTransactionSet(
+        pool.transactions)
+    lastHash = BlockchainUtils.hash(
+        blockchain.blocks[-1].payload()).hexdigest()
+    blockCount = blockchain.blocks[-1].blockCount + 1
+    
+    blockTwo = forger.createBlock(coveredTransactions, lastHash, blockCount)
+    blockchain.addBlock(blockTwo)
+    pool.removeFromPool(blockTwo.transactions)
 
     pprint.pprint(blockchain.toJson())
