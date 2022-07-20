@@ -1,6 +1,6 @@
 
 
-class SenderConnector():
+class SocketConnector():
 
     def __init__(self, ip, port):
         self.ip = ip
