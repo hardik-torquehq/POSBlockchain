@@ -13,9 +13,9 @@ class BlockchainUtils():
         return dataHash
 
     @staticmethod
-    def encodeobject(obj):
-        return jsonpickle.encode(obj, unpicklable=True) 
+    def encode(objectToEncode):
+        return jsonpickle.encode(objectToEncode, unpicklable=True)
 
     @staticmethod
-    def decodeobject(obj):
-        return jsonpickle.decode(obj)
+    def decode(encodedObject):
+        return jsonpickle.decode(encodedObject)

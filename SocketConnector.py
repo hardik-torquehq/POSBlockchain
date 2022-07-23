@@ -1,10 +1,10 @@
-
-
 class SocketConnector():
-
     def __init__(self, ip, port):
         self.ip = ip
         self.port = port
 
     def equals(self, connector):
-        return self.ip == connector.ip and self.port == connector.port
+        if connector.ip == self.ip and connector.port == self.port:
+            return True
+        else:
+            return False
